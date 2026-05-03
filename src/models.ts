@@ -5,26 +5,63 @@ export function pbModel(): IpbModel {
 
     const BASE_URL = process.env.BASE_URL;
 
+    function decodeHtmlText(str: string): string {
+        return str
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/\u00a0/g, ' ')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+    }
+
+    function dateFormatter(
+        date: string
+    ) {
+        let dayTime = '00:00';
+        let year = new Date().getFullYear().toString();
+        const frs = decodeHtmlText(date).split(' ');
+        const monthday = frs[0] as string;
+        const tbd = frs[1] as string;
+        if (tbd.includes(':')) {
+            dayTime = tbd
+        }else{
+            year = tbd;
+        }
+        return `${year}-${monthday}T${dayTime}Z`;
+    }
+
     async function fetchEntries(
         searchTerm: string,
         page: number
-    ) {
+    ) {       
         const response = await fetch(`${BASE_URL}/search/${encodeURIComponent(searchTerm)}/${page}/99/0`);
         const data = await response.text();
         const $page = parse(data);
         const $elements = Array.from($page.querySelectorAll('#searchResult tr')).slice(1);
-        return $elements.map(($element) => {
+        return $elements.map(($element) => {         
             const title = $element.querySelector('.detName a')?.textContent;
-            if (!title) return;
+            if (!title) return;        
+            const info = ($element.querySelector('.detDesc')?.textContent)?.split(',');     
             const cells = Array.from($element.querySelectorAll('> td'));
             const magnet = $element.querySelector('a[href^="magnet:?"]')?.getAttribute('href');
             const leechers = cells.pop()?.textContent;
             const seeders = cells.pop()?.textContent;
+            const uploadAt = info![0]?.split('Uploaded')[1]?.trim();
+            const size = info![1]?.split('Size')[1]?.trim();
+            const uploadBy = info![2]?.split('ULed by')[1]?.trim();
+            const [categ, subcateg] = $element.querySelectorAll('.vertTh a');
             return {
                 title,
-                magnet,
+                category: categ?.textContent,
+                subcategory: subcateg?.textContent,
+                uploadDate: dateFormatter(uploadAt!),
+                size,
+                uploadBy,
                 leechers,
                 seeders,
+                magnet
             };
         }).filter((item) => item?.title);
     }
