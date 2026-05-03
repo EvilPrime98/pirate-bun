@@ -14,3 +14,9 @@ export interface IpbModel {
         numOfPages: number,
     }) => Promise<Entry[]>;
 }
+
+export interface IqbModel {
+    getCookie: () => Promise<IqbModel>;
+    addMagnet: (magnetUrl: string) => Promise<string>;
+    addMagnets: (magnetUrls: string[]) => Promise<void>;
+}

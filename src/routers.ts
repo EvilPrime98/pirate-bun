@@ -1,10 +1,12 @@
 import { Hono } from "hono";
-import type { IpbModel } from "./types";
+import type { IpbModel, IqbModel } from "./types";
 
 export function pbRouter({
-    pbModel
+    pbModel,
+    qbModel
 }:{
-    pbModel: () => IpbModel
+    pbModel: () => IpbModel,
+    qbModel: () => IqbModel
 }) {
 
     const app = new Hono();
@@ -41,6 +43,43 @@ export function pbRouter({
                 error: true,
                 message: 'There was an error searching',
                 results: []
+            }, 500);
+
+        }
+
+    });
+
+    app.post('/download', async (c) => {
+
+        try {
+
+            const body = await c.req.json();
+            const magnet = body.magnet;
+            
+            if (!magnet) {
+                return c.json({
+                    error: true,
+                    message: 'No magnet provided',
+                    entry: null
+                }, 422);
+            }
+
+            const entry = (await qbModel().getCookie()).addMagnet(magnet as string);
+    
+            return c.json({
+                error: false,
+                message: 'Download successful',
+                entry
+            }, 200);
+
+        } catch (e) {
+
+            console.log(e);
+
+            return c.json({
+                error: true,
+                message: 'There was an error downloading',
+                entry: null
             }, 500);
 
         }

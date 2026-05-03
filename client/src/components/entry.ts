@@ -2,6 +2,28 @@ import { UltraComponent } from "ultra-light.js";
 import type { ILink } from "../mainTypes";
 import styles from './entry.module.css';
 import { warnIcon } from "../icons";
+import { downloadMagnet } from "../services/links";
+
+function DangerButton({
+    magnet,
+    onDangerDownload,
+}: {
+    magnet: string,
+    onDangerDownload: (magnet: string) => void,
+}) {
+    return UltraComponent({
+        component: '<td></td>',
+        children: [
+            UltraComponent({
+                component: `<button>${warnIcon(12, 'currentColor')}<span>Download</span></button>`,
+                className: [styles.downloadBtn!, styles.downloadBtnDanger!],
+                eventHandler: {
+                    click: () => onDangerDownload(magnet)
+                }
+            })
+        ]
+    })
+}
 
 export function Entry({
     link,
@@ -15,6 +37,15 @@ export function Entry({
     const ratio = leechers > 0 ? seeders / leechers : Infinity;
     const isDanger = seeders < 3 || ratio < 0.05;
 
+    async function onClickDownload() {
+        try {
+            const { error, message, _} = await downloadMagnet({ magnet });
+            if (error) throw new Error(message);
+        }catch(e){
+            console.log(e);
+        }
+    }
+
     return UltraComponent({
         
         component: `<tr></tr>`,
@@ -26,23 +57,20 @@ export function Entry({
             `<td class="${styles.titleCell}">${title}</td>`,
             
             `<td class="${styles.seeders}">
-                <span class="${styles.seedersInner}">${seeders}${isDanger ? warnIcon(13, '#f87171') : ''}</span>
+                <span class="${styles.seedersInner}">
+                    ${seeders}${isDanger ? warnIcon(13, '#f87171') : ''}
+                </span>
             </td>`,
             
             `<td class="${styles.leechers}">${leechers}</td>`,
             
-            !isDanger ? `<td><a href="${magnet}" class="${styles.downloadBtn}">Download</a></td>`
+            isDanger 
+            ? DangerButton({ magnet, onDangerDownload })
             : UltraComponent({
-                component: '<td></td>',
-                children: [
-                    UltraComponent({
-                        component: `<button>${warnIcon(12, 'currentColor')}<span>Download</span></button>`,
-                        className: [styles.downloadBtn!, styles.downloadBtnDanger!],
-                        eventHandler: {
-                            click: () => onDangerDownload(magnet)
-                        }
-                    })
-                ]
+                component: `<td><a class="${styles.downloadBtn}">Download</a></td>`,
+                eventHandler: {
+                    click: onClickDownload
+                }
             })
 
         ]

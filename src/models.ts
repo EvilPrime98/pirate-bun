@@ -1,5 +1,5 @@
 import { parse } from "node-html-parser";
-import type { Entry, IpbModel } from "./types";
+import type { Entry, IpbModel, IqbModel } from "./types";
 
 export function pbModel(): IpbModel {
 
@@ -50,7 +50,7 @@ export function pbModel(): IpbModel {
 
 }
 
-export function qbModel() {
+export function qbModel(): IqbModel {
 
     const QB_USER = process.env.QB_USER;
     const QB_PASS = process.env.QB_PASS;
