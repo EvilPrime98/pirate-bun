@@ -28,7 +28,8 @@ export function pbRouter({
 
             const results = await pbModel().get({ 
                 searchTerm: searchTerm,
-                numOfPages: pages
+                numOfPages: pages,
+                request: c.req
             });
 
             return c.json({

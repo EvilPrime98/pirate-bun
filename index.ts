@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from 'hono/cors'
-import { pbModel, qbModel } from './src/models.ts';
+import { pbModel } from './src/models/pbModel.ts';
+import { qbModel } from './src/models/qbModel.ts';
 import { pbRouter } from './src/routers.ts';
 import { serveStatic } from "hono/bun";
 import { NOT_FOUND } from "./src/data.ts";
