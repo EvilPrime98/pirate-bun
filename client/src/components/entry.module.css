@@ -1,0 +1,75 @@
+.downloadBtn {
+    display: inline-block;
+    padding: 0.3rem 0.75rem;
+    background: #6366f1;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background 0.15s ease;
+}
+
+.downloadBtn:hover {
+    background: #4f52d3;
+}
+
+.downloadBtnDanger {
+    background: #7f1d1d;
+    color: #fca5a5;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.downloadBtnDanger:hover {
+    background: #991b1b;
+}
+
+.dangerZone {
+    background: rgba(248, 113, 113, 0.06);
+    border-left: 3px solid #f87171;
+}
+
+.dangerZone td:first-child {
+    padding-left: calc(1rem - 3px);
+}
+
+.titleCell {
+    max-width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #dde1f5;
+}
+
+.magnetCell {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.seeders {
+    color: #4ade80;
+    font-weight: 600;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.seedersInner {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.leechers {
+    color: #f87171;
+    font-weight: 600;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
