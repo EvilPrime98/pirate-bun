@@ -31,6 +31,15 @@
     border-radius: 8px;
     outline: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    &::placeholder {
+        color: #4a4f6a;
+    }
 }
 
 .pagesSelect {
@@ -45,55 +54,10 @@
     cursor: pointer;
     white-space: nowrap;
     transition: border-color 0.15s ease;
-}
 
-.pagesSelect:focus {
-    border-color: #6366f1;
-}
-
-.searchInput:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-}
-
-.searchInput::placeholder {
-    color: #4a4f6a;
-}
-
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #1a1d2e;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid #2a2d40;
-}
-
-.table td,
-.table th {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid #2a2d40;
-}
-
-.table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.table tbody tr:hover {
-    background: #20233a;
-}
-
-.tableHeader {
-    background: #14162a;
-}
-
-.tableHeader th {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #5a5f80;
+    &:focus {
+        border-color: #6366f1;
+    }
 }
 
 .resultsIndicator {

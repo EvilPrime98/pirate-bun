@@ -1,3 +1,8 @@
+:root {
+    --primary-color: #6366f1;
+    --primary-red: #f87171;
+}
+
 *,
 *::before,
 *::after {

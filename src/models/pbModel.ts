@@ -49,18 +49,18 @@ export function pbModel(): IpbModel {
             const title = $element.querySelector('.detName a')?.textContent;
             if (!title) return;
             const info = ($element.querySelector('.detDesc')?.textContent)?.split(',');
-            const cells = Array.from($element.querySelectorAll('> td'));
+            const $cells = Array.from($element.querySelectorAll('> td'));
             const magnet = $element.querySelector('a[href^="magnet:?"]')?.getAttribute('href');
-            const leechers = cells.pop()?.textContent;
-            const seeders = cells.pop()?.textContent;
+            const leechers = $cells.pop()?.textContent;
+            const seeders = $cells.pop()?.textContent;
             const uploadAt = info![0]?.split('Uploaded')[1]?.trim();
             const size = info![1]?.split('Size')[1]?.trim();
             const uploadBy = info![2]?.split('ULed by')[1]?.trim();
-            const [categ, subcateg] = $element.querySelectorAll('.vertTh a');
+            const [$categ, $subcateg] = $element.querySelectorAll('.vertTh a');
             return {
                 title,
-                category: categ?.textContent,
-                subcategory: subcateg?.textContent,
+                category: $categ?.textContent,
+                subcategory: $subcateg?.textContent,
                 uploadDate: dateFormatter(uploadAt!),
                 size,
                 uploadBy,

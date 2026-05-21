@@ -1,0 +1,16 @@
+.headerth {
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.headerth > span {
+    display: inline-flex;
+}
+
+.colDate     { width: 150px; }
+.colSeeders  { width: 150px; }
+.colLeechers { width: 150px; }
+.colDownload { width: 150px; }

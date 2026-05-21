@@ -1,36 +1,45 @@
 import { UltraActivity, UltraComponent, ultraState } from "ultra-light.js";
 import styles from './app.module.css';
 import { ultraLinks } from "./hooks/ultraLinks";
-import { Entry } from "./components/entry";
-import { warnIconLarge } from "./icons";
 import { LowSeedersModal } from "./components/low-seeders-modal";
 import { Loader } from "./components/loader";
+import { SearchInput } from "./components/search-input";
+import { ResultsTable } from "./components/results-table";
+import { ResultsIndicator } from "./components/results-indicator";
 
 export function App() {
 
-    const { getLinks, subscribeToLinks, fetchComics, queryProvider } = ultraLinks();
+    const { 
+        getLinks, 
+        subscribeToLinks, 
+        fetchComics, 
+        queryProvider: linksProvider, 
+        cleanup: ultraLinksCleanup, 
+        filters 
+    } = ultraLinks();
+
     const [,setSearch,] = ultraState<string>('');
+    
     const [getPages, setPages] = ultraState<number>(1);
+    
     const [getFilter, setFilter, subscribeToFilter] = ultraState<string>('');
+    
     const [getPendingMagnet, setPendingMagnet, subscribeToPendingMagnet] = ultraState<string | null>(null);
 
-    function getFilteredLinks() {
+    const getFilteredLinks = () => {
         const filter = getFilter().toLowerCase().trim();
         return filter
         ? getLinks().filter(link => link.title.toLowerCase().includes(filter))
         : getLinks();
     }
 
-    function onLinksChange($tbody: HTMLElement) {
-        $tbody.replaceChildren(
-            ...getFilteredLinks().map(link => Entry({
-                link,
-                onDangerDownload: setPendingMagnet
-            }))
-        )
+    const handleSearch = (search: string) => {
+        fetchComics({ search, pages: getPages() });
     }
 
     return UltraComponent({
+        
+        cleanup: [...ultraLinksCleanup],
 
         component: '<main></main>',
 
@@ -40,36 +49,14 @@ export function App() {
 
             `<h1 class="${styles.title}">PBClient</h1>`,
 
-            UltraComponent({
-                
-                component: '<div></div>',
-                
+            UltraComponent({                
+                component: '<div></div>',                
                 className: [styles.searchRow!],
-
                 children: [
-                    
-                    UltraComponent({
-                        component: '<input/>',
-                        className: [styles.searchInput!],
-                        attributes: {
-                            type: 'text',
-                            placeholder: 'Search'
-                        },
-                        eventHandler: {
-                            input: (event: Event) => {
-                                const input = event.target as HTMLInputElement;
-                                setSearch(input.value);
-                            },
-                            keydown: (event: Event) => {
-                                const kEvent = event as KeyboardEvent;
-                                const input = event.target as HTMLInputElement;
-                                if (kEvent.key === 'Enter') {
-                                    fetchComics({ search: input.value, pages: getPages() });
-                                }
-                            }
-                        }
-                    }),
-
+                    SearchInput({
+                        setSearch,
+                        handleSearch 
+                    }),                  
                     UltraComponent({
                         component: '<input/>',
                         className: [styles.searchInput!],
@@ -84,7 +71,6 @@ export function App() {
                             }
                         }
                     }),
-
                     UltraComponent({
                         component: `<select>
                             <option value="1">1 page</option>
@@ -101,80 +87,38 @@ export function App() {
                             }
                         }
                     })
-
                 ]
-
             }),
 
             UltraActivity({
-                component: '<p></p>',
+                component: ResultsIndicator({
+                    getFilteredLinks,
+                    subscribeToLinks,
+                    subscribeToFilter
+                }),
                 mode: {
                     state: () => getLinks().length > 0,
                     subscriber: subscribeToLinks,
-                },
-                className: [styles.resultsIndicator!],
-                trigger: [
-                    {
-                        subscriber: subscribeToLinks,
-                        triggerFunction: ($el: HTMLElement) => {
-                            $el.textContent = `${getFilteredLinks().length} results`;
-                        }
-                    },
-                    {
-                        subscriber: subscribeToFilter,
-                        triggerFunction: ($el: HTMLElement) => {
-                            $el.textContent = `${getFilteredLinks().length} results`;
-                        }
-                    }
-                ]
+                }
             }),
 
             Loader({
-                stateFunction: () => queryProvider.isFetching(),
-                subscribers: queryProvider.subscribeToFetching,
+                stateFunction: () => linksProvider.isFetching(),
+                subscribers: linksProvider.subscribeToFetching,
             }),
 
             UltraActivity({
-
-                component: '<table></table>',
-
+                component: ResultsTable({
+                    getFilteredLinks,
+                    setPendingMagnet,
+                    subscribeToLinks,
+                    subscribeToFilter,
+                    filters
+                }),
                 mode: {
-                    state: () => !queryProvider.isFetching(),
-                    subscriber: queryProvider.subscribeToFetching,
+                    state: () => !linksProvider.isFetching(),
+                    subscriber: linksProvider.subscribeToFetching,
                 },
-
-                className: [styles.table!],
-
-                children: [
-
-                    UltraComponent({
-                        component:`<thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Seeders</th>
-                                <th>Leechers</th>
-                                <th>Download</th>
-                            </tr>
-                        </thead>`,
-                        className: [styles.tableHeader!]
-                    }),
-
-                    UltraComponent({
-                        component: '<tbody></tbody>',
-                        trigger: [
-                            {
-                                subscriber: subscribeToLinks,
-                                triggerFunction: onLinksChange,
-                            },
-                            {
-                                subscriber: subscribeToFilter,
-                                triggerFunction: onLinksChange,
-                            }
-                        ],
-                    })
-
-                ]
-
             }),
 
             LowSeedersModal({

@@ -1,7 +1,7 @@
 .downloadBtn {
     display: inline-block;
     padding: 0.3rem 0.75rem;
-    background: #6366f1;
+    background: var(--primary-color);
     color: #fff;
     border-radius: 6px;
     font-size: 0.8rem;
@@ -12,6 +12,29 @@
     border: none;
     font-family: inherit;
     transition: background 0.15s ease;
+    min-width: 130px;
+    text-align: center;
+}
+
+.downloadBtn.downloading {
+    background: var(--primary-red);
+    cursor: wait;
+    /* animation: downloading 1s infinite; */
+}
+
+@keyframes downloading {
+    0% {
+        background: #4f52d3;
+        transform: translateX(0);
+    }
+    50% {
+        background: #4f52d3;
+        transform: translateX(10px);
+    }
+    100% {
+        background: #4f52d3;
+        transform: translateX(0);
+    }
 }
 
 .downloadBtn:hover {
@@ -40,7 +63,7 @@
 }
 
 .titleCell {
-    max-width: 500px;
+    max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

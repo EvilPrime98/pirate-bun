@@ -1,29 +1,9 @@
-import { UltraComponent } from "ultra-light.js";
+import { UltraComponent, ultraState } from "ultra-light.js";
 import type { ILink } from "../mainTypes";
 import styles from './entry.module.css';
 import { warnIcon } from "../icons";
-import { downloadMagnet } from "../services/links";
-
-function DangerButton({
-    magnet,
-    onDangerDownload,
-}: {
-    magnet: string,
-    onDangerDownload: (magnet: string) => void,
-}) {
-    return UltraComponent({
-        component: '<td></td>',
-        children: [
-            UltraComponent({
-                component: `<button>${warnIcon(12, 'currentColor')}<span>Download</span></button>`,
-                className: [styles.downloadBtn!, styles.downloadBtnDanger!],
-                eventHandler: {
-                    click: () => onDangerDownload(magnet)
-                }
-            })
-        ]
-    })
-}
+import { DangerButton } from "./danger-button";
+import { ultraQBDownload } from "../hooks/ultraQBDownload";
 
 export function Entry({
     link,
@@ -33,17 +13,25 @@ export function Entry({
     onDangerDownload: (magnet: string) => void,
 }) {
 
-    const { title, magnet, leechers, seeders } = link;
+    const { title, magnet } = link;
+    const uploadDate = (link.uploadDate).split('T')[0];
+    const leechers = Number(link.leechers);
+    const seeders = Number(link.seeders);
     const ratio = leechers > 0 ? seeders / leechers : Infinity;
     const isDanger = seeders < 3 || ratio < 0.05;
+    const { queryProvider: downloadProvider, download } = ultraQBDownload();
+    const [buttonText, setButtonText, subscribeToButtonText] = ultraState('Download');
 
-    async function onClickDownload() {
-        try {
-            const { error, message, _} = await downloadMagnet({ magnet });
-            if (error) throw new Error(message);
-        }catch(e){
-            console.log(e);
-        }
+    const onClickDownload = async () => {
+        await download({ magnet });
+    }
+
+    const onFetchingChange = ($a: HTMLElement) => {
+        $a.classList.toggle(styles.downloading!, downloadProvider.isFetching());
+    }
+
+    const onButtonTextChange = ($a: HTMLElement) => {
+        $a.innerText = buttonText();
     }
 
     return UltraComponent({
@@ -55,7 +43,9 @@ export function Entry({
         children: [
             
             `<td class="${styles.titleCell}">${title}</td>`,
-            
+        
+            `<td>${uploadDate}</td>`,
+
             `<td class="${styles.seeders}">
                 <span class="${styles.seedersInner}">
                     ${seeders}${isDanger ? warnIcon(13, '#f87171') : ''}
@@ -67,12 +57,39 @@ export function Entry({
             isDanger 
             ? DangerButton({ magnet, onDangerDownload })
             : UltraComponent({
-                component: `<td><a class="${styles.downloadBtn}">Download</a></td>`,
+                component: `<td></td>`,
                 eventHandler: {
                     click: onClickDownload
-                }
+                },
+                children: [
+                    UltraComponent({
+                        component: '<a></a>',
+                        className: [styles.downloadBtn!],
+                        onMount: [onFetchingChange, onButtonTextChange],
+                        trigger: [
+                            {
+                                subscriber: downloadProvider.subscribeToFetching,
+                                triggerFunction: onFetchingChange
+                            },
+                            {
+                                subscriber: subscribeToButtonText,
+                                triggerFunction: onButtonTextChange
+                            }
+                        ]
+                    })
+                ],
             })
 
+        ],
+
+        trigger: [
+            { 
+                subscriber: subscribeToButtonText,
+                triggerFunction: () => {
+                    const newText = downloadProvider.isFetching() ? 'Downloading...' : 'Download';
+                    setButtonText(newText);
+                }
+            }
         ]
 
     })
