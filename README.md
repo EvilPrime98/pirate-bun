@@ -44,6 +44,12 @@ bun run start
 
 **API + client UI:**
 
+Create a `.env` file at the client root:
+
+```env
+VITE_API_URL=http://SERVER_IP:SERVER_PORT/api
+```
+
 ```bash
 cd client && pnpm install && pnpm run build && cd ..
 bun run start
@@ -51,76 +57,202 @@ bun run start
 
 When the client is built, it is served statically from the same Bun HTTP server at `/`.
 
-## API
+# API Reference
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/api/search?q=<term>&pages=<n>` | Search torrents (default: 3 pages) |
-| `POST` | `/api/download` | Send a magnet link to qBittorrent |
+## `GET /`
 
-### `GET /api/search`
+### Required
 
-**Query params**
+| Param | Type | Description |
+|---|---|---|
+| `search` | string | Search term |
 
-| Param | Type | Default | Description |
-|-------|------|---------|-------------|
-| `q` | `string` | — | Search term *(required)* |
-| `pages` | `number` | `3` | Number of result pages to fetch |
+### Optional
 
-**Response**
+| Param | Type | Default |
+|---|---|---|
+| `pages` | integer | `3` |
+
+---
+
+## Filters
+
+### `category`
+Filters results where the category **contains** the value (case-insensitive).
+
+```
+GET /?search=ubuntu&category=video
+```
+
+---
+
+### `subcategory`
+Filters results where the subcategory **contains** the value (case-insensitive).
+
+```
+GET /?search=ubuntu&subcategory=movies
+```
+
+---
+
+### `uploadBy`
+Filters results where the uploader name **contains** the value (case-insensitive).
+
+```
+GET /?search=ubuntu&uploadBy=yify
+```
+
+---
+
+### `minSeeders` / `maxSeeders`
+Filters by seeder count. Both are optional and combinable.
+
+```
+GET /?search=ubuntu&minSeeders=100&maxSeeders=5000
+```
+
+| Params | Behavior |
+|---|---|
+| `minSeeders` only | `seeders >= min` |
+| `maxSeeders` only | `seeders <= max` |
+| Both | `min <= seeders <= max` |
+
+---
+
+### `minLeechers` / `maxLeechers`
+Filters by leecher count. Same logic as seeders.
+
+```
+GET /?search=ubuntu&minLeechers=10&maxLeechers=500
+```
+
+| Params | Behavior |
+|---|---|
+| `minLeechers` only | `leechers >= min` |
+| `maxLeechers` only | `leechers <= max` |
+| Both | `min <= leechers <= max` |
+
+---
+
+### `uploadAt`
+Filters results uploaded on an exact date. **Ignored** if `uploadAfter` or `uploadBefore` is present.
+
+```
+GET /?search=ubuntu&uploadAt=2024-03-15
+```
+
+- Format: `YYYY-MM-DD`
+- Mutually exclusive with `uploadAfter` / `uploadBefore`
+
+---
+
+### `uploadAfter`
+Filters results uploaded after the given date (day-exclusive). **Ignored** if `uploadAt` is present.
+
+```
+GET /?search=ubuntu&uploadAfter=2024-01-01
+```
+
+- Format: `YYYY-MM-DD`
+
+---
+
+### `uploadBefore`
+Filters results uploaded before the given date (day-exclusive). **Ignored** if `uploadAt` is present.
+
+```
+GET /?search=ubuntu&uploadBefore=2024-12-31
+```
+
+- Format: `YYYY-MM-DD`
+
+---
+
+### `limit`
+Caps the number of results. Applied last, after all filters and sorts.
+
+```
+GET /?search=ubuntu&limit=10
+```
+
+- If omitted, all matching results are returned
+
+---
+
+## Sorts
+
+Applied after all filters, before `limit`. Providing multiple sort params applies them in this order: seeders → leechers → size — the last one wins.
+
+### `sortBySeeders`
+Sorts by seeder count descending (highest first).
+
+```
+GET /?search=ubuntu&sortBySeeders=1
+```
+
+### `sortBySeedersASC`
+Sorts by seeder count ascending (lowest first). Takes priority over `sortBySeeders` when both are present.
+
+```
+GET /?search=ubuntu&sortBySeedersASC=1
+```
+
+### `sortByLeechers`
+Sorts by leecher count descending.
+
+```
+GET /?search=ubuntu&sortByLeechers=1
+```
+
+### `sortByLeechersASC`
+Sorts by leecher count ascending.
+
+```
+GET /?search=ubuntu&sortByLeechersASC=1
+```
+
+### `sortBySize`
+Sorts by file size descending (largest first). Handles `MiB` and `GiB` units.
+
+```
+GET /?search=ubuntu&sortBySize=1
+```
+
+### `sortBySizeASC`
+Sorts by file size ascending (smallest first).
+
+```
+GET /?search=ubuntu&sortBySizeASC=1
+```
+
+---
+
+## `POST /download`
+
+Sends a magnet link to the qBittorrent client.
+
+### Body
 
 ```json
-[
-  {
-    "title": "...",
-    "magnet": "magnet:?xt=...",
-    "seeders": 142,
-    "leechers": 7,
-    "lowSeeders": false
-  }
-]
+{ "magnet": "magnet:?xt=urn:btih:..." }
 ```
 
-`lowSeeders` is `true` when the seeder count falls below the warning threshold.
-
-### `POST /api/download`
-
-**Body**
+### Response
 
 ```json
-{ "magnet": "magnet:?xt=..." }
+{
+  "error": false,
+  "message": "Download successful",
+  "entry": "..."
+}
 ```
 
-**Response** — `204 No Content` on success.
+---
 
-## Client (optional)
+## Full example
 
-The bundled UI provides search, result listing, seeder warnings, and one-click download to qBittorrent. It is an optional convenience layer — every action it performs maps 1:1 to the API above.
-
-```bash
-# Install client deps (once)
-cd client && pnpm install
-
-# Dev server (hot reload, proxies /api to the Bun server)
-cd client && pnpm run dev
-
-# Production build (output goes to client/dist, served by the API server)
-cd client && pnpm run build
-
-# Lint
-cd client && pnpm run lint
+```
+GET /?search=ubuntu&category=video&minSeeders=50&sortBySeeders=1&limit=5
 ```
 
-## Development
-
-Run the API server and the client dev server in parallel:
-
-```bash
-# Terminal 1
-bun run dev
-
-# Terminal 2
-cd client && pnpm run dev
-```
-
-The Vite dev server proxies `/api` requests to the Bun backend, so there is no CORS configuration needed during development.
+Returns the top 5 most-seeded video results for "ubuntu" with at least 50 seeders.
