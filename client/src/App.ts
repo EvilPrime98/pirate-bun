@@ -6,24 +6,26 @@ import { Loader } from "./components/loader";
 import { SearchInput } from "./components/search-input";
 import { ResultsTable } from "./components/results-table";
 import { ResultsIndicator } from "./components/results-indicator";
+import { FiltersPanel } from "./components/filters-panel";
 
 export function App() {
 
-    const { 
-        getLinks, 
-        subscribeToLinks, 
-        fetchComics, 
-        queryProvider: linksProvider, 
-        cleanup: ultraLinksCleanup, 
-        filters 
+    const {
+        getLinks,
+        subscribeToLinks,
+        fetchComics,
+        queryProvider: linksProvider,
+        cleanup: ultraLinksCleanup,
+        filters,
+        applyApiFilters,
     } = ultraLinks();
 
-    const [,setSearch,] = ultraState<string>('');
-    
+    const [, setSearch,] = ultraState<string>('');
+
     const [getPages, setPages] = ultraState<number>(1);
-    
+
     const [getFilter, setFilter, subscribeToFilter] = ultraState<string>('');
-    
+
     const [getPendingMagnet, setPendingMagnet, subscribeToPendingMagnet] = ultraState<string | null>(null);
 
     const getFilteredLinks = () => {
@@ -38,7 +40,7 @@ export function App() {
     }
 
     return UltraComponent({
-        
+
         cleanup: [...ultraLinksCleanup],
 
         component: '<main></main>',
@@ -49,14 +51,14 @@ export function App() {
 
             `<h1 class="${styles.title}">PBClient</h1>`,
 
-            UltraComponent({                
-                component: '<div></div>',                
+            UltraComponent({
+                component: '<div></div>',
                 className: [styles.searchRow!],
                 children: [
                     SearchInput({
                         setSearch,
-                        handleSearch 
-                    }),                  
+                        handleSearch
+                    }),
                     UltraComponent({
                         component: '<input/>',
                         className: [styles.searchInput!],
@@ -88,6 +90,10 @@ export function App() {
                         }
                     })
                 ]
+            }),
+
+            FiltersPanel({
+                onApply: applyApiFilters
             }),
 
             UltraActivity({

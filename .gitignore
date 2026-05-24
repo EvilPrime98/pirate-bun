@@ -20,3 +20,6 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 test.http
 client/.claude
 client/reports
+graphify-out/
+CLAUDE.md
+.claude/settings.json
