@@ -24,3 +24,23 @@ export interface IApiFilters {
     limit?: string;
     sort?: string;
 }
+
+export type TLibraryEntry = {
+    relativePath: string;
+    name: string;
+}
+
+export interface ITorrent {
+    hash: string;
+    name: string;
+    state: string;
+    progress: number;
+    dlspeed: number;
+    upspeed: number;
+    size: number;
+    eta: number;
+    num_seeds: number;
+    num_leechs: number;
+    ratio: number;
+    added_on: number;
+}

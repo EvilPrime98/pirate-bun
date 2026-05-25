@@ -1,5 +1,15 @@
 import { Hono } from "hono";
-import type { IpbModel, IqbModel } from "./types";
+import path from "path";
+import type { IpbModel, IqbModel } from "../types";
+
+const QB_SAVE_DIR = process.env.QB_SAVE_DIR;
+
+function normalizeMediaPath(p: string) {
+    return p
+    .replace(/\\/g, '/')
+    .replace(/\/+/g, '/')
+    .replace(/^\/|\/$/g, '');
+}
 
 export function pbRouter({
     pbModel,
@@ -55,8 +65,17 @@ export function pbRouter({
         try {
 
             const body = await c.req.json();
-            const magnet = body.magnet;
             
+            const magnet = body.magnet as string;
+            
+            const rawPath: string | undefined = body.savePath
+            ? normalizeMediaPath(body.savePath)
+            : undefined;
+
+            const savePath = rawPath && QB_SAVE_DIR
+            ? path.posix.join(QB_SAVE_DIR, rawPath)
+            : undefined;
+
             if (!magnet) {
                 return c.json({
                     error: true,
@@ -64,8 +83,9 @@ export function pbRouter({
                     entry: null
                 }, 422);
             }
-
-            const entry = (await qbModel().getCookie()).addMagnet(magnet as string);
+            
+            const entry = (await qbModel().getCookie())
+            .addMagnet(magnet, savePath);
     
             return c.json({
                 error: false,

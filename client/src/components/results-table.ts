@@ -8,12 +8,14 @@ import { TableHeader } from "./table-header";
 export function ResultsTable({
     getFilteredLinks,
     setPendingMagnet,
+    onDownload,
     subscribeToLinks,
     subscribeToFilter,
     filters
 }: {
     getFilteredLinks: () => ILink[];
     setPendingMagnet: (magnet: string | null) => void;
+    onDownload: (magnet: string) => void;
     subscribeToLinks: (fn: (value: ILink[]) => void) => () => void;
     subscribeToFilter: (fn: (value: string) => void) => () => void;
     filters: IFilters;
@@ -23,7 +25,8 @@ export function ResultsTable({
         $tbody.replaceChildren(
             ...getFilteredLinks().map(link => Entry({
                 link,
-                onDangerDownload: setPendingMagnet
+                onDangerDownload: setPendingMagnet,
+                onDownload,
             }))
         )
     }

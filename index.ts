@@ -2,7 +2,10 @@ import { Hono } from "hono";
 import { cors } from 'hono/cors'
 import { pbModel } from './src/models/pbModel.ts';
 import { qbModel } from './src/models/qbModel.ts';
-import { pbRouter } from './src/routers.ts';
+import { fsModel } from './src/models/fsModel.ts';
+import { pbRouter } from './src/routers/pbRouter.ts';
+import { qbRouter } from './src/routers/qbRouter.ts';
+import { libraryRouter } from './src/routers/libraryRouter.ts';
 import { serveStatic } from "hono/bun";
 import { NOT_FOUND } from "./src/data.ts";
 
@@ -13,6 +16,10 @@ function createApp() {
     app.use(cors());
 
     app.route('/api', pbRouter({ pbModel, qbModel }));
+    
+    app.route('/library', libraryRouter({ fsModel }));
+
+    app.route('/qb', qbRouter({ qbModel }));
 
     if (process.env.HEADLESS !== 'true') {
         app.use('/*', serveStatic({ root: './client/dist' }));

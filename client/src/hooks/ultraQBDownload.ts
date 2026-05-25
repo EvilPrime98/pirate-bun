@@ -6,13 +6,15 @@ export function ultraQBDownload() {
     const queryProvider = ultraQuery();
 
     async function download({
-        magnet
+        magnet,
+        directory,
     }: {
         magnet: string,
+        directory?: string,
     }) {
         const { data } = await queryProvider.fetch(
             `pb-download-${magnet}`,
-            () => downloadMagnet({ magnet })
+            () => downloadMagnet({ magnet, ...(directory ? { savePath: directory } : {}) })
         );
         console.log(data);
     }

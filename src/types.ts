@@ -26,8 +26,10 @@ export interface IpbModel {
 
 export interface IqbModel {
     getCookie: () => Promise<IqbModel>;
-    addMagnet: (magnetUrl: string) => Promise<string>;
+    addMagnet: (magnetUrl: string, savePath?: string) => Promise<string>;
     addMagnets: (magnetUrls: string[]) => Promise<void>;
+    getTorrents: () => Promise<unknown>;
+    getTorrent: (hash: string) => Promise<unknown>;
 }
 
 export const FILTER_OPTIONS = {
@@ -51,3 +53,12 @@ export const FILTER_OPTIONS = {
 }
 
 export type IFilterOptions = keyof typeof FILTER_OPTIONS;
+
+export interface TLibraryEntry {
+    relativePath: string;
+    name: string;
+}
+
+export interface IfsModel {
+    getDirectories: () => Promise<TLibraryEntry[]>;
+}

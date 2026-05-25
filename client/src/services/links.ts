@@ -32,16 +32,18 @@ export async function linksService({
 }
 
 export async function downloadMagnet({
-    magnet
+    magnet,
+    savePath,
 }:{
     magnet: string,
+    savePath?: string,
 }){
     const response = await fetch(`${API_URL}/download`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ magnet })
+        body: JSON.stringify({ magnet, savePath })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.message);

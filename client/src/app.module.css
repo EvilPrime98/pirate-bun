@@ -105,3 +105,20 @@
         font-size: 0.75rem;
     }
 }
+
+.homeHeader {
+    display: flex; 
+    align-items: center; 
+    gap: 1.5rem; 
+    margin-bottom: 1.5rem;
+}
+
+.homeHeader h1 {
+    margin-bottom: 0;
+}
+
+.homeHeader a {
+    font-size: 0.875rem; 
+    color: #5a5f80; 
+    text-decoration: none;
+}

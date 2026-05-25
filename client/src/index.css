@@ -22,3 +22,12 @@ body {
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
 }
+
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}

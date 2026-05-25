@@ -11,6 +11,8 @@ export function qbModel(): IqbModel {
         getCookie,
         addMagnet,
         addMagnets,
+        getTorrents,
+        getTorrent
     };
 
     async function getCookie() {
@@ -25,9 +27,17 @@ export function qbModel(): IqbModel {
         return model;
     }
 
-    async function addMagnet(magnetUrl: string) {
-        if (!SID) throw new Error('Not authenticated — call getCookie() first');
-        const body = new URLSearchParams({ urls: magnetUrl });
+    async function addMagnet(
+        magnetUrl: string, 
+        savePath?: string
+    ) {      
+        
+        if (!SID) throw new Error('Not authenticated — call getCookie() first');      
+        
+        const body = new URLSearchParams({ urls: magnetUrl });       
+        
+        if (savePath) body.set('savepath', savePath);
+        
         const response = await fetch(`${QB_HOST}/api/v2/torrents/add`, {
             method: 'POST',
             headers: {
@@ -36,15 +46,49 @@ export function qbModel(): IqbModel {
             },
             body: body.toString()
         });
+
         const text = await response.text();
+        
         if (text !== 'Ok.') throw new Error(`qBittorrent rejected magnet: ${text}`);
-        return text;
+        
+        return text;     
+
     }
 
-    async function addMagnets(magnetUrls: string[]) {
+    async function addMagnets(
+        magnetUrls: string[]
+    ) {
         for (const url of magnetUrls) {
             await addMagnet(url);
         }
+    }
+
+    async function getTorrents() {
+        const response = await fetch(`${QB_HOST}/api/v2/torrents/info`, {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/x-www-form-urlencoded', 
+                'Cookie': `SID=${SID}` 
+            }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(response.statusText);
+        return data;
+    }
+
+    async function getTorrent(
+        hash: string
+    ) {
+        const response = await fetch(`${QB_HOST}/api/v2/torrents/info?hashes=${hash}`, {
+            method: 'GET',
+            headers: { 
+                'Content-Type': 'application/x-www-form-urlencoded', 
+                'Cookie': `SID=${SID}` 
+            }
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(response.statusText);
+        return data;
     }
 
     return model;
