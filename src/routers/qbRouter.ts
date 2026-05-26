@@ -9,6 +9,48 @@ export function qbRouter({
 
     const app = new Hono();
 
+    app.get('/status', async (c) => {
+
+        try {
+
+            const missing = [
+                'QB_HOST', 
+                'QB_USER', 
+                'QB_PASS'
+            ].filter((k) => !process.env[k]);
+
+            if (missing.length) {
+                return c.json({
+                    error: true,
+                    message: `Missing environment variable(s): ${missing.join(', ')}`,
+                    ok: false
+                }, 500);
+            }
+
+            const client = await qbModel().getCookie();
+            const version = await client.getVersion();
+
+            return c.json({
+                error: false,
+                message: 'qBittorrent healthy',
+                ok: true,
+                version
+            }, 200);
+
+        } catch (e) {
+
+            console.log(e);
+
+            return c.json({
+                error: true,
+                message: 'qBittorrent unhealthy',
+                ok: false
+            }, 503);
+
+        }
+
+    });
+
     app.get('/torrents', async (c) => {
 
         try {

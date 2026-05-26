@@ -23,3 +23,5 @@ client/reports
 graphify-out/
 CLAUDE.md
 .claude/settings.json
+.codex
+AGENTS.md

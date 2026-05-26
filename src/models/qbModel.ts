@@ -9,6 +9,7 @@ export function qbModel(): IqbModel {
 
     const model = {
         getCookie,
+        getVersion,
         addMagnet,
         addMagnets,
         getTorrents,
@@ -25,6 +26,23 @@ export function qbModel(): IqbModel {
         if (!cookies) throw new Error('No cookies found');
         SID = cookies.split(';')[0]?.split('=')[1];
         return model;
+    }
+
+    async function getVersion() {
+
+        if (!SID) throw new Error('Not authenticated — call getCookie() first');
+
+        const response = await fetch(`${QB_HOST}/api/v2/app/version`, {
+            method: 'GET',
+            headers: {
+                'Cookie': `SID=${SID}`
+            }
+        });
+
+        const text = await response.text();
+        if (!response.ok) throw new Error(text || response.statusText);
+        return text;
+
     }
 
     async function addMagnet(

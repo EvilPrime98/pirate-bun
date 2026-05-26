@@ -26,6 +26,7 @@ export interface IpbModel {
 
 export interface IqbModel {
     getCookie: () => Promise<IqbModel>;
+    getVersion: () => Promise<string>;
     addMagnet: (magnetUrl: string, savePath?: string) => Promise<string>;
     addMagnets: (magnetUrls: string[]) => Promise<void>;
     getTorrents: () => Promise<unknown>;
