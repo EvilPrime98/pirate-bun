@@ -12,16 +12,18 @@ export interface IFilters {
     reset: () => void;
 }
 
+const queryProvider = ultraQuery();
+
 export function ultraLinks() {
-
-    const queryProvider = ultraQuery();
-
+    
     const [getLinks, setLinks,] = ultraState<ILink[]>([]);
-
+    
     const [getFilteredLinks, setFilteredLinks, subscribeToFilteredLinks] = ultraState<ILink[]>([]);
-
+    
     const [getApiFilters, setApiFilters,] = ultraState<IApiFilters>({});
+    
     const [getCurrentSearch, setCurrentSearch,] = ultraState<string>('');
+    
     const [getCurrentPages, setCurrentPages,] = ultraState<number>(1);
 
     const filters: IFilters = ultraCompState({
@@ -43,7 +45,7 @@ export function ultraLinks() {
             return [...Object.keys(state).map(key => {
                 //@ts-ignore
                 if (state[key].subscribe) return state[key].subscribe(fn);
-            })];
+            }).filter(Boolean)];
         }
 
     })
