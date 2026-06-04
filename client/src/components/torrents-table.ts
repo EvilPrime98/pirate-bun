@@ -13,9 +13,33 @@ export function TorrentsTable({
 
     const rowMap = new Map<string, { element: UltraLightElement; data: ITorrent }>();
 
+    const STATE_ORDER: Record<string, number> = {
+        downloading: 0,
+        forcedDL: 1,
+        metaDL: 2,
+        uploading: 3,
+        forcedUP: 4,
+        stalledDL: 5,
+        stalledUP: 6,
+        queuedDL: 7,
+        queuedUP: 8,
+        checkingDL: 9,
+        checkingUP: 10,
+        moving: 11,
+        pausedDL: 12,
+        pausedUP: 13,
+        error: 14,
+        missingFiles: 15,
+        unknown: 16,
+    };
+
     const onTorrentsChange = ($tbody: HTMLElement) => {
-        
-        const newTorrents = getTorrents();
+
+        const newTorrents = getTorrents().slice().sort((a, b) => {
+            const pa = STATE_ORDER[a.state] ?? 99;
+            const pb = STATE_ORDER[b.state] ?? 99;
+            return pa - pb;
+        });
         
         const newHashes = new Set(newTorrents.map(t => t.hash));
 

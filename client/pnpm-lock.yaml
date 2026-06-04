@@ -13,7 +13,7 @@ importers:
         version: 6.0.3
       ultra-light.js:
         specifier: github:EvilPrime98/ultra-light-js
-        version: https://codeload.github.com/EvilPrime98/ultra-light-js/tar.gz/12210e86ff8a77eee5a599d0da161719844f9e0b
+        version: https://codeload.github.com/EvilPrime98/ultra-light-js/tar.gz/bdae2eca291220e463fdcc68e2d502b929b9630b
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
@@ -470,6 +470,9 @@ packages:
   cssom@0.5.0:
     resolution: {integrity: sha512-iKuQcq+NdHqlAcwUY0o/HL69XQrUaQdMjmStJ8JFmUaiiQErlhrmuigkg/CU4E2J0IyUKUrMAgl36TvN67MqTw==}
 
+  csstype@3.2.3:
+    resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
+
   debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
     engines: {node: '>=6.0'}
@@ -854,8 +857,8 @@ packages:
   uhyphen@0.2.0:
     resolution: {integrity: sha512-qz3o9CHXmJJPGBdqzab7qAYuW8kQGKNEuoHFYrBwV6hWIMcpAmxDLXojcHfFr9US1Pe6zUswEIJIbLI610fuqA==}
 
-  ultra-light.js@https://codeload.github.com/EvilPrime98/ultra-light-js/tar.gz/12210e86ff8a77eee5a599d0da161719844f9e0b:
-    resolution: {tarball: https://codeload.github.com/EvilPrime98/ultra-light-js/tar.gz/12210e86ff8a77eee5a599d0da161719844f9e0b}
+  ultra-light.js@https://codeload.github.com/EvilPrime98/ultra-light-js/tar.gz/bdae2eca291220e463fdcc68e2d502b929b9630b:
+    resolution: {tarball: https://codeload.github.com/EvilPrime98/ultra-light-js/tar.gz/bdae2eca291220e463fdcc68e2d502b929b9630b}
     version: 1.0.17
 
   uri-js@4.4.1:
@@ -1264,6 +1267,8 @@ snapshots:
 
   cssom@0.5.0: {}
 
+  csstype@3.2.3: {}
+
   debug@4.4.3:
     dependencies:
       ms: 2.1.3
@@ -1647,8 +1652,9 @@ snapshots:
 
   uhyphen@0.2.0: {}
 
-  ultra-light.js@https://codeload.github.com/EvilPrime98/ultra-light-js/tar.gz/12210e86ff8a77eee5a599d0da161719844f9e0b:
+  ultra-light.js@https://codeload.github.com/EvilPrime98/ultra-light-js/tar.gz/bdae2eca291220e463fdcc68e2d502b929b9630b:
     dependencies:
+      csstype: 3.2.3
       linkedom: 0.18.12
     transitivePeerDependencies:
       - canvas
