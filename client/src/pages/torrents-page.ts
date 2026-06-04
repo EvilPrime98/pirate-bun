@@ -35,11 +35,19 @@ export function TorrentsPage() {
 
                 children: [
 
+                    UltraComponent({
+                        component: '<h1>Torrents</h1>',
+                        className: [styles.title!],
+                        styles: {
+                            viewTransitionName: 'torrents-to-torrents'
+                        }
+                    }),
+
                     UltraLink({
                         href: '/',
                         children: [
                             UltraComponent({
-                                component: '<span>Home</span>',
+                                component: '<span>PbClient</span>',
                                 styles: {
                                     viewTransitionName: 'pbclient-to-home'
                                 }
@@ -48,12 +56,17 @@ export function TorrentsPage() {
                         viewTransition: true
                     }),
 
-                    UltraComponent({
-                        component: '<h1>Torrents</h1>',
-                        className: [styles.title!],
-                        styles: {
-                            viewTransitionName: 'torrents-to-torrents'
-                        }
+                    UltraLink({
+                        href: '/nyaa',
+                        children: [
+                            UltraComponent({
+                                component: '<span>Nyaa</span>',
+                                styles: {
+                                    viewTransitionName: 'nyaa-to-nyaa'
+                                }
+                            })
+                        ],
+                        viewTransition: true
                     }),
 
                 ]

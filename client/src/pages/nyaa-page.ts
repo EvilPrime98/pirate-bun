@@ -1,26 +1,21 @@
 import { UltraActivity, UltraComponent, ultraState, UltraLink } from "ultra-light.js";
 import styles from '../app.module.css';
-import { ultraLinks } from "../hooks/ultraLinks";
+import { ultraNyaa } from "../hooks/ultraNyaa";
 import { ultraLibrary } from "../hooks/ultraLibrary";
 import { LowSeedersModal } from "../components/low-seeders-modal";
 import { DownloadDirModal } from "../components/download-dir-modal";
 import { Loader } from "../components/loader";
 import { SearchInput } from "../components/search-input";
-import { ResultsTable } from "../components/results-table";
-import { ResultsIndicator } from "../components/results-indicator";
-import { FiltersPanel } from "../components/filters-panel";
+import { NyaaTable } from "../components/nyaa-table";
 
-export function HomePage() {
+export function NyaaPage() {
 
     const {
         getLinks,
         subscribeToLinks,
-        fetchComics,
-        queryProvider: linksProvider,
-        cleanup: ultraLinksCleanup,
-        filters,
-        applyApiFilters,
-    } = ultraLinks();
+        fetchNyaa,
+        queryProvider: nyaaProvider,
+    } = ultraNyaa();
 
     const {
         getDirectories,
@@ -28,9 +23,7 @@ export function HomePage() {
         fetchDirectories,
     } = ultraLibrary();
 
-    const [, setSearch,] = ultraState<string>('');
-
-    const [getPages, setPages] = ultraState<number>(1);
+    const [, setSearch] = ultraState<string>('');
 
     const [getFilter, setFilter, subscribeToFilter] = ultraState<string>('');
 
@@ -41,22 +34,20 @@ export function HomePage() {
     const getFilteredLinks = () => {
         const filter = getFilter().toLowerCase().trim();
         return filter
-            ? getLinks().filter(link => link.title.toLowerCase().includes(filter))
+            ? getLinks().filter(link => link.name.toLowerCase().includes(filter))
             : getLinks();
-    }
+    };
 
-    const handleSearch = (search: string) => {
-        fetchComics({ search, pages: getPages() });
-    }
+    const handleSearch = (query: string) => {
+        fetchNyaa({ query });
+    };
 
     const onDownload = (magnet: string) => {
         fetchDirectories();
         setPendingDownload(magnet);
-    }
+    };
 
     return UltraComponent({
-
-        cleanup: [...ultraLinksCleanup],
 
         component: '<main></main>',
 
@@ -73,11 +64,24 @@ export function HomePage() {
                 children: [
 
                     UltraComponent({
-                        component: '<h1>PbClient</h1>',
+                        component: '<h1>Nyaa</h1>',
                         className: [styles.title!],
                         styles: {
-                            viewTransitionName: 'pbclient-to-home'
+                            viewTransitionName: 'nyaa-to-nyaa'
                         }
+                    }),
+
+                    UltraLink({
+                        href: '/',
+                        children: [
+                            UltraComponent({
+                                component: '<span>PbClient</span>',
+                                styles: {
+                                    viewTransitionName: 'pbclient-to-home'
+                                }
+                            })
+                        ],
+                        viewTransition: true
                     }),
 
                     UltraLink({
@@ -93,19 +97,6 @@ export function HomePage() {
                         viewTransition: true
                     }),
 
-                    UltraLink({
-                        href: '/nyaa',
-                        children: [
-                            UltraComponent({
-                                component: '<span>Nyaa</span>',
-                                styles: {
-                                    viewTransitionName: 'nyaa-to-nyaa'
-                                }
-                            })
-                        ],
-                        viewTransition: true
-                    }),
-
                 ]
 
             }),
@@ -114,16 +105,18 @@ export function HomePage() {
                 component: '<div></div>',
                 className: [styles.searchRow!],
                 children: [
+
                     SearchInput({
                         setSearch,
                         handleSearch
                     }),
+
                     UltraComponent({
                         component: '<input/>',
                         className: [styles.searchInput!],
                         attributes: {
                             type: 'text',
-                            placeholder: 'Filter by title'
+                            placeholder: 'Filter by name'
                         },
                         eventHandler: {
                             input: (event: Event) => {
@@ -132,34 +125,20 @@ export function HomePage() {
                             }
                         }
                     }),
-                    UltraComponent({
-                        component: `<select>
-                            <option value="1">1 page</option>
-                            <option value="2">2 pages</option>
-                            <option value="3">3 pages</option>
-                            <option value="5">5 pages</option>
-                            <option value="10">10 pages</option>
-                        </select>`,
-                        className: [styles.pagesSelect!],
-                        eventHandler: {
-                            change: (event: Event) => {
-                                const select = event.target as HTMLSelectElement;
-                                setPages(Number(select.value));
-                            }
-                        }
-                    })
+
                 ]
             }),
 
-            FiltersPanel({
-                onApply: applyApiFilters
-            }),
-
             UltraActivity({
-                component: ResultsIndicator({
-                    getFilteredLinks,
-                    subscribeToLinks,
-                    subscribeToFilter
+                component: UltraComponent({
+                    component: '<p></p>',
+                    className: [styles.resultsIndicator!],
+                    trigger: [{
+                        subscriber: [subscribeToLinks, subscribeToFilter],
+                        triggerFunction: ($p: HTMLElement) => {
+                            $p.textContent = `${getFilteredLinks().length} results`;
+                        }
+                    }]
                 }),
                 mode: {
                     state: () => getLinks().length > 0,
@@ -168,22 +147,21 @@ export function HomePage() {
             }),
 
             Loader({
-                stateFunction: () => linksProvider.isFetching(),
-                subscribers: linksProvider.subscribeToFetching,
+                stateFunction: () => nyaaProvider.isFetching(),
+                subscribers: nyaaProvider.subscribeToFetching,
             }),
 
             UltraActivity({
-                component: ResultsTable({
+                component: NyaaTable({
                     getFilteredLinks,
                     setPendingMagnet,
                     onDownload,
                     subscribeToLinks,
                     subscribeToFilter,
-                    filters
                 }),
                 mode: {
-                    state: () => !linksProvider.isFetching(),
-                    subscriber: linksProvider.subscribeToFetching,
+                    state: () => !nyaaProvider.isFetching(),
+                    subscriber: nyaaProvider.subscribeToFetching,
                 },
             }),
 
@@ -203,6 +181,6 @@ export function HomePage() {
 
         ]
 
-    })
+    });
 
 }

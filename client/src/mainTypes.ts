@@ -30,6 +30,16 @@ export type TLibraryEntry = {
     name: string;
 }
 
+export interface INyaaLink {
+    name: string;
+    magnet: string;
+    size: string;
+    date: string;
+    seeders: string;
+    leechers: string;
+    downloads: string;
+}
+
 export interface ITorrent {
     hash: string;
     name: string;
