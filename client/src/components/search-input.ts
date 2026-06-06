@@ -30,7 +30,7 @@ export function SearchInput({
         component: '<input/>',
         className: [styles.searchInput!],
         attributes: {
-            type: 'text',
+            type: 'search',
             placeholder: 'Search'
         },
         eventHandler: {
