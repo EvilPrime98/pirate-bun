@@ -3,24 +3,22 @@ import styles from '../app.module.css';
 import type { ILink } from "../mainTypes";
 
 export function ResultsIndicator({
-    getFilteredLinks,
+    getLinks,
     subscribeToLinks,
-    subscribeToFilter
 }:{
-    getFilteredLinks: () => ILink[],
+    getLinks: () => ILink[],
     subscribeToLinks: (fn: (value: ILink[]) => void) => () => void,
-    subscribeToFilter: (fn: (value: string) => void) => () => void
 }) {
 
     const onLinksChange = ($p: HTMLElement) => {
-        $p.textContent = `${getFilteredLinks().length} results`;
+        $p.textContent = `${getLinks().length} results`;
     }
-    
+
     return UltraComponent({
         component: '<p></p>',
         className: [styles.resultsIndicator!],
         trigger: [{
-            subscriber: [subscribeToLinks, subscribeToFilter],
+            subscriber: [subscribeToLinks],
             triggerFunction: onLinksChange
         }]
     })

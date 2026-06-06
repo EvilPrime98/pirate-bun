@@ -23,23 +23,19 @@ export function NyaaPage() {
         fetchDirectories,
     } = ultraLibrary();
 
-    const [, setSearch] = ultraState<string>('');
+    const [getQuery, setQuery] = ultraState<string>('');
 
-    const [getFilter, setFilter, subscribeToFilter] = ultraState<string>('');
+    const [getNyaaFilter, setNyaaFilter] = ultraState<string>('no-filter');
+
+    const [getNyaaCategory, setNyaaCategory] = ultraState<string>('all');
 
     const [getPendingMagnet, setPendingMagnet, subscribeToPendingMagnet] = ultraState<string | null>(null);
 
     const [getPendingDownload, setPendingDownload, subscribeToPendingDownload] = ultraState<string | null>(null);
 
-    const getFilteredLinks = () => {
-        const filter = getFilter().toLowerCase().trim();
-        return filter
-            ? getLinks().filter(link => link.name.toLowerCase().includes(filter))
-            : getLinks();
-    };
-
     const handleSearch = (query: string) => {
-        fetchNyaa({ query });
+        setQuery(query);
+        fetchNyaa({ query, filter: getNyaaFilter(), category: getNyaaCategory() });
     };
 
     const onDownload = (magnet: string) => {
@@ -107,24 +103,77 @@ export function NyaaPage() {
                 children: [
 
                     SearchInput({
-                        setSearch,
+                        setSearch: setQuery,
                         handleSearch
                     }),
 
                     UltraComponent({
-                        component: '<input/>',
-                        className: [styles.searchInput!],
-                        attributes: {
-                            type: 'text',
-                            placeholder: 'Filter by name'
-                        },
+                        component: `<select>
+                            <option value="no-filter">No filter</option>
+                            <option value="no-remakes">No remakes</option>
+                            <option value="trusted-only">Trusted only</option>
+                        </select>`,
+                        className: [styles.pagesSelect!],
                         eventHandler: {
-                            input: (event: Event) => {
-                                const input = event.target as HTMLInputElement;
-                                setFilter(input.value);
+                            change: (e: Event) => {
+                                const value = (e.target as HTMLSelectElement).value;
+                                setNyaaFilter(value);
+                                const q = getQuery();
+                                if (q) fetchNyaa({ query: q, filter: value, category: getNyaaCategory() });
                             }
                         }
                     }),
+
+                    UltraComponent({
+                        component: `<select>
+                            <option value="all">All categories</option>
+                            <optgroup label="Anime">
+                                <option value="anime">Anime</option>
+                                <option value="animeAmv">Anime - AMV</option>
+                                <option value="animeEnglish">Anime - English</option>
+                                <option value="animeNonEnglish">Anime - Non-English</option>
+                                <option value="animeRaw">Anime - Raw</option>
+                            </optgroup>
+                            <optgroup label="Audio">
+                                <option value="audio">Audio</option>
+                                <option value="audioLossless">Audio - Lossless</option>
+                                <option value="audioLossy">Audio - Lossy</option>
+                            </optgroup>
+                            <optgroup label="Literature">
+                                <option value="literature">Literature</option>
+                                <option value="literatureEnglish">Literature - English</option>
+                                <option value="literatureNonEnglish">Literature - Non-English</option>
+                                <option value="literatureRaw">Literature - Raw</option>
+                            </optgroup>
+                            <optgroup label="Live Action">
+                                <option value="liveAction">Live Action</option>
+                                <option value="liveActionEnglish">Live Action - English</option>
+                                <option value="liveActionIdol">Live Action - Idol/PV</option>
+                                <option value="liveActionNonEnglish">Live Action - Non-English</option>
+                                <option value="liveActionRaw">Live Action - Raw</option>
+                            </optgroup>
+                            <optgroup label="Pictures">
+                                <option value="pictures">Pictures</option>
+                                <option value="picturesGraphics">Pictures - Graphics</option>
+                                <option value="picturesPhotos">Pictures - Photos</option>
+                            </optgroup>
+                            <optgroup label="Software">
+                                <option value="software">Software</option>
+                                <option value="softwareApps">Software - Apps</option>
+                                <option value="softwareGames">Software - Games</option>
+                            </optgroup>
+                        </select>`,
+                        className: [styles.pagesSelect!],
+                        eventHandler: {
+                            change: (e: Event) => {
+                                const value = (e.target as HTMLSelectElement).value;
+                                setNyaaCategory(value);
+                                const q = getQuery();
+                                if (q) fetchNyaa({ query: q, filter: getNyaaFilter(), category: value });
+                            }
+                        }
+                    }),
+
 
                 ]
             }),
@@ -134,9 +183,9 @@ export function NyaaPage() {
                     component: '<p></p>',
                     className: [styles.resultsIndicator!],
                     trigger: [{
-                        subscriber: [subscribeToLinks, subscribeToFilter],
+                        subscriber: [subscribeToLinks],
                         triggerFunction: ($p: HTMLElement) => {
-                            $p.textContent = `${getFilteredLinks().length} results`;
+                            $p.textContent = `${getLinks().length} results`;
                         }
                     }]
                 }),
@@ -153,11 +202,10 @@ export function NyaaPage() {
 
             UltraActivity({
                 component: NyaaTable({
-                    getFilteredLinks,
+                    getLinks,
                     setPendingMagnet,
                     onDownload,
                     subscribeToLinks,
-                    subscribeToFilter,
                 }),
                 mode: {
                     state: () => !nyaaProvider.isFetching(),

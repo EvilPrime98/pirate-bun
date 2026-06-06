@@ -8,12 +8,21 @@ export function ultraNyaa() {
 
     const [getLinks, setLinks, subscribeToLinks] = ultraState<INyaaLink[]>([]);
 
-    async function fetchNyaa({ query }: { query: string }) {
+    async function fetchNyaa({ 
+        query, 
+        filter, 
+        category 
+    }: { 
+        query: string; 
+        filter?: string; 
+        category?: string 
+    }) {
         if (!query || query.length < 3) return;
-        const cacheKey = `nyaa-${query}`;
+        const cacheKey = `nyaa-${query}-${filter ?? ''}-${category ?? ''}`;
         const response = await queryProvider.fetch(
             cacheKey,
-            () => nyaaService({ query }),
+            //@ts-ignore
+            () => nyaaService({ query, filter, category }),
             5 * 60 * 1000
         );
         if (queryProvider.hasError()) return;

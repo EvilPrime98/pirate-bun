@@ -32,18 +32,9 @@ export function PirateBayPage() {
 
     const [getPages, setPages] = ultraState<number>(1);
 
-    const [getFilter, setFilter, subscribeToFilter] = ultraState<string>('');
-
     const [getPendingMagnet, setPendingMagnet, subscribeToPendingMagnet] = ultraState<string | null>(null);
 
     const [getPendingDownload, setPendingDownload, subscribeToPendingDownload] = ultraState<string | null>(null);
-
-    const getFilteredLinks = () => {
-        const filter = getFilter().toLowerCase().trim();
-        return filter
-            ? getLinks().filter(link => link.title.toLowerCase().includes(filter))
-            : getLinks();
-    }
 
     const handleSearch = (search: string) => {
         fetchComics({ search, pages: getPages() });
@@ -119,20 +110,6 @@ export function PirateBayPage() {
                         handleSearch
                     }),
                     UltraComponent({
-                        component: '<input/>',
-                        className: [styles.searchInput!],
-                        attributes: {
-                            type: 'text',
-                            placeholder: 'Filter by title'
-                        },
-                        eventHandler: {
-                            input: (event: Event) => {
-                                const input = event.target as HTMLInputElement;
-                                setFilter(input.value);
-                            }
-                        }
-                    }),
-                    UltraComponent({
                         component: `<select>
                             <option value="1">1 page</option>
                             <option value="2">2 pages</option>
@@ -157,9 +134,8 @@ export function PirateBayPage() {
 
             UltraActivity({
                 component: ResultsIndicator({
-                    getFilteredLinks,
+                    getLinks,
                     subscribeToLinks,
-                    subscribeToFilter
                 }),
                 mode: {
                     state: () => getLinks().length > 0,
@@ -174,11 +150,10 @@ export function PirateBayPage() {
 
             UltraActivity({
                 component: ResultsTable({
-                    getFilteredLinks,
+                    getLinks,
                     setPendingMagnet,
                     onDownload,
                     subscribeToLinks,
-                    subscribeToFilter,
                     filters
                 }),
                 mode: {

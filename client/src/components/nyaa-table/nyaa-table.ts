@@ -6,22 +6,20 @@ import type { INyaaLink } from "../../mainTypes";
 import { NyaaEntry } from "../nyaa-entry";
 
 export function NyaaTable({
-    getFilteredLinks,
+    getLinks,
     setPendingMagnet,
     onDownload,
     subscribeToLinks,
-    subscribeToFilter,
 }: {
-    getFilteredLinks: () => INyaaLink[];
+    getLinks: () => INyaaLink[];
     setPendingMagnet: (magnet: string | null) => void;
     onDownload: (magnet: string) => void;
     subscribeToLinks: (fn: (value: INyaaLink[]) => void) => () => void;
-    subscribeToFilter: (fn: (value: string) => void) => () => void;
 }) {
 
     const onLinksChange = ($tbody: HTMLElement) => {
         $tbody.replaceChildren(
-            ...getFilteredLinks().map(link => NyaaEntry({
+            ...getLinks().map(link => NyaaEntry({
                 link,
                 onDangerDownload: setPendingMagnet,
                 onDownload,
@@ -59,7 +57,7 @@ export function NyaaTable({
             UltraComponent({
                 component: '<tbody></tbody>',
                 trigger: [{
-                    subscriber: [subscribeToLinks, subscribeToFilter],
+                    subscriber: [subscribeToLinks],
                     triggerFunction: onLinksChange,
                 }]
             })

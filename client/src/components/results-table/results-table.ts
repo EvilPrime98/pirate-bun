@@ -6,24 +6,22 @@ import type { IFilters } from "../hooks/ultraLinks";
 import { TableHeader } from "../table-header/table-header";
 
 export function ResultsTable({
-    getFilteredLinks,
+    getLinks,
     setPendingMagnet,
     onDownload,
     subscribeToLinks,
-    subscribeToFilter,
     filters
 }: {
-    getFilteredLinks: () => ILink[];
+    getLinks: () => ILink[];
     setPendingMagnet: (magnet: string | null) => void;
     onDownload: (magnet: string) => void;
     subscribeToLinks: (fn: (value: ILink[]) => void) => () => void;
-    subscribeToFilter: (fn: (value: string) => void) => () => void;
     filters: IFilters;
 }) {
 
     const onLinksChange = ($tbody: HTMLElement) => {
         $tbody.replaceChildren(
-            ...getFilteredLinks().map(link => Entry({
+            ...getLinks().map(link => Entry({
                 link,
                 onDangerDownload: setPendingMagnet,
                 onDownload,
@@ -50,7 +48,7 @@ export function ResultsTable({
             UltraComponent({
                 component: '<tbody></tbody>',
                 trigger: [{
-                    subscriber: [subscribeToLinks, subscribeToFilter],
+                    subscriber: [subscribeToLinks],
                     triggerFunction: onLinksChange,
                 }]
             })
