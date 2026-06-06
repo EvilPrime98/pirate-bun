@@ -1,5 +1,5 @@
 import { ultraQuery, ultraState } from "ultra-light.js";
-import { torrentsService } from "../services/torrents";
+import { deleteTorrentService, torrentsService } from "../services/torrents";
 import type { ITorrent } from "../mainTypes";
 
 export function ultraTorrents() {
@@ -44,6 +44,11 @@ export function ultraTorrents() {
         }
     }
 
+    async function deleteTorrent(hash: string, deleteFiles: boolean) {
+        setTorrents(getTorrents().filter(t => t.hash !== hash));
+        await deleteTorrentService(hash, deleteFiles);
+    }
+
     return {
         queryProvider,
         getTorrents,
@@ -51,6 +56,7 @@ export function ultraTorrents() {
         fetchTorrents,
         startPolling,
         stopPolling,
+        deleteTorrent,
     };
 
 }

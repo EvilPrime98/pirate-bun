@@ -13,6 +13,7 @@ export function TorrentsPage() {
         fetchTorrents,
         startPolling,
         stopPolling,
+        deleteTorrent,
     } = ultraTorrents();
 
     return UltraComponent({
@@ -113,6 +114,7 @@ export function TorrentsPage() {
                 component: TorrentsTable({
                     getTorrents,
                     subscribeToTorrents,
+                    deleteTorrent,
                 }),
                 mode: {
                     state: () => !queryProvider.isFetching(),

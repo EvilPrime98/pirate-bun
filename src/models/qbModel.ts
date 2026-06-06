@@ -13,7 +13,8 @@ export function qbModel(): IqbModel {
         addMagnet,
         addMagnets,
         getTorrents,
-        getTorrent
+        getTorrent,
+        deleteTorrent
     };
 
     async function getCookie() {
@@ -107,6 +108,26 @@ export function qbModel(): IqbModel {
         const data = await response.json();
         if (!response.ok) throw new Error(response.statusText);
         return data;
+    }
+
+    async function deleteTorrent(
+        hash: string,
+        deleteFiles: boolean
+    ) {
+        if (!SID) throw new Error('Not authenticated — call getCookie() first');
+
+        const body = new URLSearchParams({ hashes: hash, deleteFiles: String(deleteFiles) });
+
+        const response = await fetch(`${QB_HOST}/api/v2/torrents/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Cookie': `SID=${SID}`
+            },
+            body: body.toString()
+        });
+
+        if (!response.ok) throw new Error(response.statusText);
     }
 
     return model;

@@ -6,9 +6,11 @@ import { TorrentEntry, updateTorrentEntry } from "./torrent-entry";
 export function TorrentsTable({
     getTorrents,
     subscribeToTorrents,
+    deleteTorrent,
 }: {
     getTorrents: () => ITorrent[];
     subscribeToTorrents: (fn: (value: ITorrent[]) => void) => () => void;
+    deleteTorrent: (hash: string, deleteFiles: boolean) => Promise<void>;
 }) {
 
     const rowMap = new Map<string, { element: UltraLightElement; data: ITorrent }>();
@@ -63,7 +65,7 @@ export function TorrentsTable({
                     $tbody.insertBefore(existing.element, atIndex ?? null);
                 }
             } else {
-                const element = TorrentEntry({ torrent }) as HTMLElement;
+                const element = TorrentEntry({ torrent, onDelete: deleteTorrent }) as HTMLElement;
                 rowMap.set(torrent.hash, { element, data: { ...torrent } });
                 $tbody.insertBefore(element, $tbody.children[index] ?? null);
             }
@@ -73,8 +75,11 @@ export function TorrentsTable({
     };
 
     return UltraComponent({
+        
         component: '<table></table>',
+        
         className: [styles.table!],
+        
         children: [
 
             UltraComponent({
@@ -89,6 +94,7 @@ export function TorrentsTable({
                         <th>↑ Speed</th>
                         <th>Size</th>
                         <th>Ratio</th>
+                        <th></th>
                     </tr>`
                 ]
             }),

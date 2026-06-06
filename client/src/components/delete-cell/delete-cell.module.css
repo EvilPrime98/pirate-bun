@@ -1,0 +1,104 @@
+.deleteCell {
+    width: 1px;
+    white-space: nowrap;
+    text-align: right;
+    position: relative;
+}
+
+.deleteBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #5a5f80;
+    padding: 0.25rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.15s;
+
+    &:hover {
+        color: #f87171;
+    }
+}
+
+.confirmPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background: #1a1d2e;
+    border: 1px solid #2a2d40;
+    padding: 0.625rem 0.75rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    z-index: 10;
+}
+
+.confirmLabel {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #c9cde3;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+}
+
+.confirmActions {
+    display: flex;
+    gap: 0.375rem;
+}
+
+.confirmKeepBtn {
+    flex: 1;
+    padding: 0.3rem 0.625rem;
+    background: none;
+    border: 1px solid #3a3d50;
+    border-radius: 5px;
+    color: #c9cde3;
+    font-size: 0.7rem;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+
+    &:hover {
+        background: #2a2d40;
+    }
+}
+
+.confirmFilesBtn {
+    flex: 1;
+    padding: 0.3rem 0.625rem;
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid #f87171;
+    border-radius: 5px;
+    color: #f87171;
+    font-size: 0.7rem;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+
+    &:hover {
+        background: rgba(248, 113, 113, 0.18);
+    }
+}
+
+.confirmCancelBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #5a5f80;
+    font-size: 0.68rem;
+    font-family: inherit;
+    padding: 0;
+    text-align: center;
+    transition: color 0.15s;
+    align-self: center;
+
+    &:hover {
+        color: #c9cde3;
+    }
+}

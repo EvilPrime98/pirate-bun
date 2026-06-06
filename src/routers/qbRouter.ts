@@ -112,6 +112,33 @@ export function qbRouter({
 
     });
 
+    app.delete('/torrents/:hash', async (c) => {
+
+        try {
+
+            const hash = c.req.param('hash');
+            const fileRemoval = c.req.query('fileRemoval') === 'true';
+            const client = await qbModel().getCookie();
+            await client.deleteTorrent(hash, fileRemoval);
+
+            return c.json({
+                error: false,
+                message: 'Torrent deleted'
+            }, 200);
+
+        } catch (e) {
+
+            console.log(e);
+
+            return c.json({
+                error: true,
+                message: 'There was an error deleting the torrent'
+            }, 500);
+
+        }
+
+    });
+
     return app;
 
 }

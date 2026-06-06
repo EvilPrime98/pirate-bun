@@ -31,6 +31,7 @@ export interface IqbModel {
     addMagnets: (magnetUrls: string[]) => Promise<void>;
     getTorrents: () => Promise<unknown>;
     getTorrent: (hash: string) => Promise<unknown>;
+    deleteTorrent: (hash: string, deleteFiles: boolean) => Promise<void>;
 }
 
 export const FILTER_OPTIONS = {
