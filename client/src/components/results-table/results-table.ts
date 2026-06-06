@@ -1,9 +1,9 @@
 import { UltraComponent } from "ultra-light.js";
 import styles from './results-table.module.css';
 import type { ILink } from "../mainTypes";
-import { Entry } from "./entry";
+import { Entry } from "../entry/entry";
 import type { IFilters } from "../hooks/ultraLinks";
-import { TableHeader } from "./table-header";
+import { TableHeader } from "../table-header/table-header";
 
 export function ResultsTable({
     getFilteredLinks,

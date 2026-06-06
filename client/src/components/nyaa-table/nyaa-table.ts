@@ -1,9 +1,9 @@
 import { UltraComponent } from "ultra-light.js";
-import tableStyles from './results-table.module.css';
-import thStyles from './table-header.module.css';
+import tableStyles from '../results-table/results-table.module.css';
+import thStyles from '../table-header/table-header.module.css';
 import nyaaStyles from './nyaa.module.css';
-import type { INyaaLink } from "../mainTypes";
-import { NyaaEntry } from "./nyaa-entry";
+import type { INyaaLink } from "../../mainTypes";
+import { NyaaEntry } from "../nyaa-entry";
 
 export function NyaaTable({
     getFilteredLinks,

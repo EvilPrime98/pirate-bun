@@ -1,5 +1,5 @@
 import { UltraComponent } from "ultra-light.js";
-import styles from './entry.module.css';
+import styles from './entry/entry.module.css';
 import { warnIcon } from "../icons";
 
 export function DangerButton({

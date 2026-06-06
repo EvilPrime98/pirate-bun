@@ -1,6 +1,6 @@
 import { UltraComponent } from "ultra-light.js";
 import type { IFilters } from "../hooks/ultraLinks";
-import styles from './table-header.module.css';
+import styles from './table-header/table-header.module.css';
 import { triangleIcon } from "../icons";
 
 export function ThUploadDate({

@@ -2,15 +2,15 @@ import { UltraActivity, UltraComponent, ultraState, UltraLink } from "ultra-ligh
 import styles from '../app.module.css';
 import { ultraLinks } from "../hooks/ultraLinks";
 import { ultraLibrary } from "../hooks/ultraLibrary";
-import { LowSeedersModal } from "../components/low-seeders-modal";
-import { DownloadDirModal } from "../components/download-dir-modal";
-import { Loader } from "../components/loader";
+import { LowSeedersModal } from "../components/low-seeders-modal/low-seeders-modal";
+import { DownloadDirModal } from "../components/download-dir-modal/download-dir-modal";
+import { Loader } from "../components/loader/loader";
 import { SearchInput } from "../components/search-input";
-import { ResultsTable } from "../components/results-table";
+import { ResultsTable } from "../components/results-table/results-table";
 import { ResultsIndicator } from "../components/results-indicator";
-import { FiltersPanel } from "../components/filters-panel";
+import { FiltersPanel } from "../components/filters-panel/filters-panel";
 
-export function HomePage() {
+export function PirateBayPage() {
 
     const {
         getLinks,
@@ -73,24 +73,11 @@ export function HomePage() {
                 children: [
 
                     UltraComponent({
-                        component: '<h1>PbClient</h1>',
+                        component: '<h1>PirateBay</h1>',
                         className: [styles.title!],
                         styles: {
                             viewTransitionName: 'pbclient-to-home'
                         }
-                    }),
-
-                    UltraLink({
-                        href: '/torrents',
-                        children: [
-                            UltraComponent({
-                                component: '<span>Torrents</span>',
-                                styles: {
-                                    viewTransitionName: 'torrents-to-torrents'
-                                }
-                            })
-                        ],
-                        viewTransition: true
                     }),
 
                     UltraLink({
@@ -100,6 +87,19 @@ export function HomePage() {
                                 component: '<span>Nyaa</span>',
                                 styles: {
                                     viewTransitionName: 'nyaa-to-nyaa'
+                                }
+                            })
+                        ],
+                        viewTransition: true
+                    }),
+
+                    UltraLink({
+                        href: '/torrents',
+                        children: [
+                            UltraComponent({
+                                component: '<span>Torrents</span>',
+                                styles: {
+                                    viewTransitionName: 'torrents-to-torrents'
                                 }
                             })
                         ],

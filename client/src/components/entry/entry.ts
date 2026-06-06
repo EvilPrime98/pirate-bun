@@ -1,8 +1,8 @@
 import { UltraComponent } from "ultra-light.js";
-import type { ILink } from "../mainTypes";
+import type { ILink } from "../../mainTypes";
 import styles from './entry.module.css';
-import { warnIcon } from "../icons";
-import { DangerButton } from "./danger-button";
+import { warnIcon } from "../../icons";
+import { DangerButton } from "../danger-button";
 
 export function Entry({
     link,

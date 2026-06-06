@@ -1,9 +1,9 @@
 import { UltraActivity, UltraComponent, ultraState, ultraCompState, type UltraTrigger } from "ultra-light.js";
 import styles from './filters-panel.module.css';
 import type { IApiFilters } from '../mainTypes';
-import { FilterInput } from './filter-input';
-import { InlineLabel } from './inline-label';
-import { FilterGroup } from './filter-group';
+import { FilterInput } from '../filter-input';
+import { InlineLabel } from '../inline-label';
+import { FilterGroup } from '../filter-group';
 
 export function FiltersPanel({
     onApply

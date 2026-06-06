@@ -2,11 +2,11 @@ import { UltraActivity, UltraComponent, ultraState, UltraLink } from "ultra-ligh
 import styles from '../app.module.css';
 import { ultraNyaa } from "../hooks/ultraNyaa";
 import { ultraLibrary } from "../hooks/ultraLibrary";
-import { LowSeedersModal } from "../components/low-seeders-modal";
-import { DownloadDirModal } from "../components/download-dir-modal";
-import { Loader } from "../components/loader";
+import { LowSeedersModal } from "../components/low-seeders-modal/low-seeders-modal";
+import { DownloadDirModal } from "../components/download-dir-modal/download-dir-modal";
+import { Loader } from "../components/loader/loader";
 import { SearchInput } from "../components/search-input";
-import { NyaaTable } from "../components/nyaa-table";
+import { NyaaTable } from "../components/nyaa-table/nyaa-table";
 
 export function NyaaPage() {
 
@@ -63,25 +63,25 @@ export function NyaaPage() {
 
                 children: [
 
-                    UltraComponent({
-                        component: '<h1>Nyaa</h1>',
-                        className: [styles.title!],
-                        styles: {
-                            viewTransitionName: 'nyaa-to-nyaa'
-                        }
-                    }),
-
                     UltraLink({
                         href: '/',
                         children: [
                             UltraComponent({
-                                component: '<span>PbClient</span>',
+                                component: '<span>PirateBay</span>',
                                 styles: {
                                     viewTransitionName: 'pbclient-to-home'
                                 }
                             })
                         ],
                         viewTransition: true
+                    }),
+
+                    UltraComponent({
+                        component: '<h1>Nyaa</h1>',
+                        className: [styles.title!],
+                        styles: {
+                            viewTransitionName: 'nyaa-to-nyaa'
+                        }
                     }),
 
                     UltraLink({

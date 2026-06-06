@@ -1,6 +1,6 @@
 import { UltraActivity, UltraComponent } from "ultra-light.js";
 import styles from './low-seeders-modal.module.css';
-import { warnIconLarge } from "../icons";
+import { warnIconLarge } from "../../icons";
 
 export function LowSeedersModal({
     getPendingMagnet,

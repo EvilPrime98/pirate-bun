@@ -2,7 +2,7 @@ import { UltraActivity, UltraComponent, UltraLink } from "ultra-light.js";
 import styles from './torrents.module.css';
 import { ultraTorrents } from "../hooks/ultraTorrents";
 import { TorrentsTable } from "../components/torrents-table";
-import { Loader } from "../components/loader";
+import { Loader } from "../components/loader/loader";
 
 export function TorrentsPage() {
 
@@ -18,7 +18,7 @@ export function TorrentsPage() {
     return UltraComponent({
 
         onMount: [startPolling],
-        
+
         cleanup: [stopPolling],
 
         component: '<main></main>',
@@ -35,19 +35,11 @@ export function TorrentsPage() {
 
                 children: [
 
-                    UltraComponent({
-                        component: '<h1>Torrents</h1>',
-                        className: [styles.title!],
-                        styles: {
-                            viewTransitionName: 'torrents-to-torrents'
-                        }
-                    }),
-
                     UltraLink({
                         href: '/',
                         children: [
                             UltraComponent({
-                                component: '<span>PbClient</span>',
+                                component: '<span>PirateBay</span>',
                                 styles: {
                                     viewTransitionName: 'pbclient-to-home'
                                 }
@@ -67,6 +59,14 @@ export function TorrentsPage() {
                             })
                         ],
                         viewTransition: true
+                    }),
+
+                    UltraComponent({
+                        component: '<h1>Torrents</h1>',
+                        className: [styles.title!],
+                        styles: {
+                            viewTransitionName: 'torrents-to-torrents'
+                        }
                     }),
 
                 ]

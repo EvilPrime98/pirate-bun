@@ -1,6 +1,6 @@
 import { UltraComponent } from "ultra-light.js";
 import type { INyaaLink } from "../mainTypes";
-import styles from './entry.module.css';
+import styles from './entry/entry.module.css';
 import { warnIcon } from "../icons";
 import { DangerButton } from "./danger-button";
 

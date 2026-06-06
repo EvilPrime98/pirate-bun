@@ -1,5 +1,5 @@
 import { UltraComponent, type UltraTrigger } from "ultra-light.js";
-import styles from './filters-panel.module.css';
+import styles from './filters-panel/filters-panel.module.css';
 
 export function FilterInput({
     type,

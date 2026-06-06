@@ -1,7 +1,7 @@
 import { UltraActivity, UltraComponent } from "ultra-light.js";
 import styles from './download-dir-modal.module.css';
-import { ultraQBDownload } from "../hooks/ultraQBDownload";
-import type { TLibraryEntry } from "../mainTypes";
+import { ultraQBDownload } from "../../hooks/ultraQBDownload";
+import type { TLibraryEntry } from "../../mainTypes";
 
 export function DownloadDirModal({
     getPendingMagnet,
